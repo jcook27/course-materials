@@ -20,7 +20,7 @@ import (
 func worker(target string, ports, results chan int) {
 	for p := range ports {
 		address := fmt.Sprintf("%s:%d", target, p)    
-		conn, err := net.DialTimeout("tcp", address, 20 * time.Second) // TODO 2 : REPLACE THIS WITH DialTimeout (before testing!) // Dial changed to dial timeout
+		conn, err := net.DialTimeout("tcp", address, 5 * time.Second) // TODO 2 : REPLACE THIS WITH DialTimeout (before testing!) // Dial changed to dial timeout
 		if err != nil { 
 			results <- -1 * p
 			continue
