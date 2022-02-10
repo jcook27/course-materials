@@ -17,7 +17,7 @@ import (
 func worker(ports, results chan int) {
 	for p := range ports {
 		address := fmt.Sprintf("scanme.nmap.org:%d", p)    
-		conn, err := net.DialTimeout("tcp", address, 1 * time.Second) // TODO 2 : REPLACE THIS WITH DialTimeout (before testing!) // Dial changed to dial timeout
+		conn, err := net.DialTimeout("tcp", address, 10 * time.Second) // TODO 2 : REPLACE THIS WITH DialTimeout (before testing!) // Dial changed to dial timeout
 		if err != nil { 
 			results <- -1 * p
 			continue
@@ -32,11 +32,11 @@ func worker(ports, results chan int) {
 // med: easy + return  complex data structure(s?) (maps or slices) containing the ports.
 // hard: restructuring code - consider modification to class/object 
 // No matter what you do, modify scanner_test.go to align; note the single test currently fails
-func PortScanner() int {  
+func PortScanner() (int, int){  
 
 	//TODO 3 : ADD closed ports; currently code only tracks open ports // closedports added
-	var openports []int  // notice the capitalization here. access limited!
 	var closedports []int
+	var openports []int  // notice the capitalization here. access limited!
 	ports := make(chan int, 100)   // TODO 4: TUNE THIS FOR CODEANYWHERE / LOCAL MACHINE
 	results := make(chan int)
 
@@ -62,7 +62,7 @@ func PortScanner() int {
 	close(ports)
 	close(results)
 	sort.Ints(openports)
-
+	sort.Ints(closedports)
 	//TODO 5 : Enhance the output for easier consumption, include closed ports
 
 	for _, port := range openports {
@@ -71,6 +71,6 @@ func PortScanner() int {
 	for _, port := range closedports {
 		fmt.Printf("%d, closed\n", port)
 	}
-	return (len(openports) + len(closedports)) // TODO 6 : Return total number of ports scanned (number open, number closed); 
+	return len(openports), len(closedports) // TODO 6 : Return total number of ports scanned (number open, number closed); 
 	//you'll have to modify the function parameter list in the defintion and the values in the scanner_test
 }
