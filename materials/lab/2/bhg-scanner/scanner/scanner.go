@@ -40,7 +40,7 @@ func PortScanner(target string) (int, int){
 	//TODO 3 : ADD closed ports; currently code only tracks open ports // closedports added
 	var closedports []int
 	var openports []int  // notice the capitalization here. access limited!
-	ports := make(chan int, 100)   // TODO 4: TUNE THIS FOR CODEANYWHERE / LOCAL MACHINE
+	ports := make(chan int, 150)   // 75 = 1m10.055s, 100 = 0m45.117s
 	results := make(chan int)
 
 	for i := 0; i < cap(ports); i++ {
