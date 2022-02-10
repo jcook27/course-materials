@@ -20,7 +20,7 @@ import (
 func worker(target string, ports, results chan int) {
 	for p := range ports {
 		address := fmt.Sprintf("%s:%d", target, p)    
-		conn, err := net.DialTimeout("tcp", address, 5 * time.Second) // TODO 2 : REPLACE THIS WITH DialTimeout (before testing!) // Dial changed to dial timeout
+		conn, err := net.DialTimeout("tcp", address, 60 * time.Second) // TODO 2 : REPLACE THIS WITH DialTimeout (before testing!) // Dial changed to dial timeout
 		if err != nil { 
 			results <- -1 * p
 			continue
@@ -35,12 +35,12 @@ func worker(target string, ports, results chan int) {
 // med: easy + return  complex data structure(s?) (maps or slices) containing the ports.
 // hard: restructuring code - consider modification to class/object 
 // No matter what you do, modify scanner_test.go to align; note the single test currently fails
-func PortScanner(target string) (int, int){  
+func PortScanner(target string, start int, end int) (int, int){  
 
 	//TODO 3 : ADD closed ports; currently code only tracks open ports // closedports added
 	var closedports []int
 	var openports []int  // notice the capitalization here. access limited!
-	ports := make(chan int, 150)   // 75 = 1m10.055s, 100 = 0m45.117s
+	ports := make(chan int, 150)   // 75 = 1m10.055s, 100 = 0m45.117s, 150 = 0m35.057s
 	results := make(chan int)
 
 	for i := 0; i < cap(ports); i++ {
@@ -48,12 +48,12 @@ func PortScanner(target string) (int, int){
 	}
 
 	go func() {
-		for i := 1; i <= 1024; i++ {
+		for i := start; i <= end; i++ {
 			ports <- i
 		}
 	}()
 
-	for i := 0; i < 1024; i++ {
+	for i := 0; i <= end - start; i++ {
 		port := <-results
 		if port >= 0 {
 			openports = append(openports, port)
