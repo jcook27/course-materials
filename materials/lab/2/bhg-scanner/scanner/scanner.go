@@ -4,7 +4,7 @@
 // Useage: To run this code either:  
 //		1. From: bhg-scanner/main -> `go build` then `./main`
  //		2. From: bhg-scanner/scanner -> `go test`
- //		The code has been modified from the origianl to: use DialTimeout, keep track of the closed ports, print values as csv, return the number of open ports and closed ports, and allow selecting a diffrent target to scan.
+ //		The code has been modified from the origianl to: use DialTimeout, keep track of the closed ports, print values as csv, return the number of open ports and closed ports, allow selecting a diffrent target to scan, and select a port to start scaning from and where to stop scaning.
 
 
 package scanner
