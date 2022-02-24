@@ -1,0 +1,1 @@
+Modified HostSearch function to take in an int to search other pages of results.
