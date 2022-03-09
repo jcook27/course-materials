@@ -102,12 +102,24 @@ func DeleteAssignment(w http.ResponseWriter, r *http.Request) {
 func UpdateAssignment(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Entering %s end point", r.URL.Path)
 	w.Header().Set("Content-Type", "application/json")
-	
+	w.WriteHeader(http.StatusOK)
 	var response Response
 	response.Assignments = Assignments
+	params := mux.Vars(r)
 
-
-
+	for i, assignment := range Assignments {
+		if assignment.Id == params["id"]{
+			json.NewEncoder(w).Encode(assignment)
+			assignment.Id =  r.FormValue("id")
+			assignment.Title =  r.FormValue("title")
+			assignment.Description =  r.FormValue("desc")
+			assignment.Points, _ =  strconv.Atoi(r.FormValue("points"))
+			Assignments[i] = assignment
+			w.WriteHeader(http.StatusCreated)
+			break
+		}
+	}
+	w.WriteHeader(http.StatusNotFound)
 }
 
 func CreateAssignment(w http.ResponseWriter, r *http.Request) {
