@@ -4,24 +4,30 @@ import (
 	"log"
 	"net/http"
 	"github.com/gorilla/mux"
-	"wyoassign/wyoassign"
+	"wyo/wyoassignment"
+	"wyo/wyoclass"
 )
 
 
 func main() {
-	wyoassign.InitAssignments()
+	wyo.InitAssignments()
 	log.Println("starting API server")
 	//create a new router
 	router := mux.NewRouter()
 	log.Println("creating routes")
 	//specify endpoints
-	router.HandleFunc("/api-status", wyoassign.APISTATUS).Methods("GET")
-	router.HandleFunc("/assignments", wyoassign.GetAssignments).Methods("GET")
-	router.HandleFunc("/assignment/{id}", wyoassign.GetAssignment).Methods("GET")
-	router.HandleFunc("/assignment/{id}", wyoassign.DeleteAssignment).Methods("DELETE")		
-	router.HandleFunc("/assignment", wyoassign.CreateAssignment).Methods("POST")	
-	router.HandleFunc("/assignments/{id}", wyoassign.UpdateAssignment).Methods("PUT")
+	router.HandleFunc("/api-status", wyo.APISTATUS).Methods("GET")
+	router.HandleFunc("/assignments", wyo.GetAssignments).Methods("GET")
+	router.HandleFunc("/assignment/{id}", wyo.GetAssignment).Methods("GET")
+	router.HandleFunc("/assignment/{id}", wyo.DeleteAssignment).Methods("DELETE")		
+	router.HandleFunc("/assignment", wyo.CreateAssignment).Methods("POST")	
+	router.HandleFunc("/assignments/{id}", wyo.UpdateAssignment).Methods("PUT")
 
+	router.HandleFunc("/classes", wyo.GetClassess).Methods("GET")
+	router.HandleFunc("/class/{id}", wyo.GetClasses).Methods("GET")
+	router.HandleFunc("/class/{id}", wyo.DeleteClass).Methods("DELETE")		
+	router.HandleFunc("/class", wyo.CreateClass).Methods("POST")	
+	router.HandleFunc("/classes/{id}", wyo.UpdateClass).Methods("PUT")
 	http.Handle("/", router)
 
 	//start and listen to requests
