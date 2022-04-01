@@ -12,7 +12,7 @@ import (
     "strconv"
 )
 
-
+var index int64 = 0
 //==========================================================================\\
 
 // Helper function walk function, modfied from Chap 7 BHG to enable passing in of
@@ -22,7 +22,6 @@ import (
 func walkFn(w http.ResponseWriter) filepath.WalkFunc {
     return func(path string, f os.FileInfo, err error) error {
         w.Header().Set("Content-Type", "application/json")
-
         for _, r := range regexes {
             if r.MatchString(path) {
                 var tfile FileInfo
@@ -32,15 +31,28 @@ func walkFn(w http.ResponseWriter) filepath.WalkFunc {
 
                 //TODO_5: As it currently stands the same file can be added to the array more than once 
                 //TODO_5: Prevent this from happening by checking if the file AND location already exist as a single record
-                Files = append(Files, tfile)
-
-                if w != nil && len(Files)>0 {
-
+				var found = false
+				for i := 0; i < len(Files); i++{
+					if Files[i].Filename == tfile.Filename && Files[i].Location == tfile.Location{
+						found = true
+						break
+					}
+				}
+				
+				if found == false{
+					Files = append(Files, tfile)
+					index++
+				}
+				
+                //if w != nil && len(Files)>0 {
+				if w != nil && index > 0{
                     //TODO_6: The current key value is the LEN of Files (this terrible); 
                     //TODO_6: Create some variable to track how many files have been added
-                    w.Write([]byte(`"`+(strconv.FormatInt(int64(len(Files)), 10))+`":  `))
+                    //w.Write([]byte(`"`+(strconv.FormatInt(int64(len(Files)), 10))+`":  `))
+				w.Write([]byte(`"`+(strconv.FormatInt(index, 10))+`":  `))
                     json.NewEncoder(w).Encode(tfile)
                     w.Write([]byte(`,`))
+
 
                 } 
                 
@@ -62,6 +74,44 @@ func walkFn(w http.ResponseWriter) filepath.WalkFunc {
 
 func walkFn2(w http.ResponseWriter, query string) filepath.WalkFunc {
     return func(path string, f os.FileInfo, err error) error {
+		w.Header().Set("Content-Type", "application/json")
+		var oneRegex = regexp.MustCompile(`(?i).txt`)
+            if oneRegex.MatchString(path) {
+                var tfile FileInfo
+                dir, filename := filepath.Split(path)
+                tfile.Filename = string(filename)
+                tfile.Location = string(dir)
+
+                //TODO_5: As it currently stands the same file can be added to the array more than once 
+                //TODO_5: Prevent this from happening by checking if the file AND location already exist as a single record
+				var found = false
+				for i := 0; i < len(Files); i++{
+					if Files[i].Filename == tfile.Filename && Files[i].Location == tfile.Location{
+						found = true
+						break
+					}
+				}
+				
+				if found == false{
+					Files = append(Files, tfile)
+					index++
+				}
+				
+                //if w != nil && len(Files)>0 {
+				if w != nil && index > 0{
+                    //TODO_6: The current key value is the LEN of Files (this terrible); 
+                    //TODO_6: Create some variable to track how many files have been added
+                    //w.Write([]byte(`"`+(strconv.FormatInt(int64(len(Files)), 10))+`":  `))
+				w.Write([]byte(`"`+(strconv.FormatInt(index, 10))+`":  `))
+                    json.NewEncoder(w).Encode(tfile)
+                    w.Write([]byte(`,`))
+
+
+                } 
+                
+                log.Printf("[+] HIT: %s\n", path)
+
+            }
         return nil
 
     }

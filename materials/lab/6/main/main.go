@@ -13,6 +13,7 @@ import (
 //TODO_1: When LOG_LEVEL = 0 DO NOT LOG anything
 //TODO_1: When LOG_LEVEL = 1 LOG API details only 
 //TODO_1: When LOG_LEVEL = 2 LOG API details and file matches (e.g., everything)
+const LOG_LEVEL = 0
 
 func main() {
 	
