@@ -28,7 +28,7 @@ func main() {
 
 	router.HandleFunc("/indexer", scrape.IndexFiles).Methods("GET")
 	router.HandleFunc("/search", scrape.FindFile).Methods("GET")		
-    router.HandleFunc("/addsearch/{regex}", scrape.Add).Methods("GET")
+    router.HandleFunc("/addsearch", scrape.Add).Methods("GET")
     router.HandleFunc("/clear", scrape.Clear).Methods("GET")
     router.HandleFunc("/reset", scrape.Reset).Methods("GET")
 
