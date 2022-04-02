@@ -230,12 +230,48 @@ func IndexFiles(w http.ResponseWriter, r *http.Request) {
 
 //TODO_12 create endpoint that calls resetRegEx AND *** clears the current Files found; ***
 //TODO_12 Make sure to connect the name of your function back to the reset endpoint main.go!
+func Reset(w http.ResponseWriter, r *http.Request) {
+    log.Printf("Entering %s end point", r.URL.Path)
+    w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+    Files = nil
+	resetRegEx()
+	index = 0
 
+    //wrapper to make "nice json"
+    w.Write([]byte(`"Regex and files found reset."  `))
+
+}
 
 //TODO_13 create endpoint that calls clearRegEx ; 
 //TODO_12 Make sure to connect the name of your function back to the clear endpoint main.go!
+func Clear(w http.ResponseWriter, r *http.Request) {
+    log.Printf("Entering %s end point", r.URL.Path)
+    w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	clearRegEx()
 
+    //wrapper to make "nice json"
+    w.Write([]byte(`"Regex cleared."  `))
 
+}
+
+func Add(w http.ResponseWriter, r *http.Request) {
+    log.Printf("Entering %s end point", r.URL.Path)
+    w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	regex, regOK := r.URL.Query()["regex"]
+    if regOK && len(regex[0]) > 0{
+		regex[0] = "(?i)" + regex[0]
+		addRegEx(regex[0])
+	
+
+    //wrapper to make "nice json"
+    w.Write([]byte(`"Regex added."  `))
+	}else{
+		w.Write([]byte(`"Regex not added."  `))
+	}
+}
 //TODO_14 create endpoint that calls addRegEx ; 
 //TODO_12 Make sure to connect the name of your function back to the addsearch endpoint in main.go!
 // consider using the mux feature
