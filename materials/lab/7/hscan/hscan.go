@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	//"sync"
+	"sync"
 )
 
 //==========================================================================\\
@@ -63,16 +63,27 @@ func GenHashMaps(filename string) {
 			log.Fatalln(err)
 		}
 		defer f.Close()
-	
+		fi, err := f.Stat()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		length := fi.Size()
+		var wg sync.WaitGroup
+		wg.Add(int(length))
 		scanner := bufio.NewScanner(f)
-		//wg := new(sync.WaitGroup)
 		for scanner.Scan() {
 			password := scanner.Text()
-			//wg.Add(2)
-			go addmd5ToMap(md5lookup, password)
-			go addshaToMap(shalookup, password)
+			go func(){
+				addmd5ToMap(md5lookup, password)
+				wg.Done()
+			}()
+			go func ()  {
+				addshaToMap(shalookup, password)
+				wg.Done()
+			}()
 		}
-	
+		wg.Wait()
 		if err := scanner.Err(); err != nil {
 			log.Fatalln(err)
 		}
