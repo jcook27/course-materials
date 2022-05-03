@@ -46,6 +46,7 @@ func main() {
 	if (fuzzStart > fuzzEnd){
 		log.Fatalf("ERROR: fuzzStart must be less than or equal to fuzzEnd.")
 	}
+	fmt.Println("\u1f31a")
 	fullAddress := ipAddress + ":" + portNumber
 	log.Println("INFO: Fuzzing: " + fullAddress + " starting at: " + strconv.Itoa(fuzzStart) + " characters and ending with: " + strconv.Itoa(fuzzEnd))
 	for i := fuzzStart; i < fuzzEnd; i++ {
@@ -55,7 +56,7 @@ func main() {
 				messageContents := "The service on " + fullAddress + " is no longer running after " + strconv.Itoa(i) + " attempts."
 				message := []byte(messageContents)
 				auth := smtp.PlainAuth("", emailAddress, emailPassword, smtpHost)
-				to := []string{"bhgolang.2022@gmail.com"}
+				to := []string{sendTo}
 				err := smtp.SendMail(smtpHost+":"+smtpPort, auth, emailAddress, to, message)
 				if err != nil{
 					log.Println("ERROR: Error sending email.")
@@ -65,12 +66,10 @@ func main() {
 			log.Fatalf("ERROR: Error at offset %d: %s\n", i, err)
 		}
 		bufio.NewReader(conn).ReadString('\n')
-
 		user := ""
 		for n := 0; n < i; n++ {
 			user += "A"
 		}
-
 		raw := "USER %s\n"
 		fmt.Fprintf(conn, raw, user)
 		bufio.NewReader(conn).ReadString('\n')
